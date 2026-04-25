@@ -1,0 +1,10 @@
+Labrador,Max,3,https://upload.wikimedia.org/wikipedia/commons/3/34/Labrador_on_Quantock_%282175262184%29.jpg
+German Shepherd,Bella,2,https://upload.wikimedia.org/wikipedia/commons/6/6a/German_Shepherd_Dog_agility_teeter.jpg
+Golden Retriever,Charlie,4,https://upload.wikimedia.org/wikipedia/commons/5/50/GoldenRetriver_agility_tunnel_wb.jpg
+French Bulldog,Luna,1,https://upload.wikimedia.org/wikipedia/commons/2/2a/Franse_buldog.jpg
+Bulldog,Cooper,5,https://upload.wikimedia.org/wikipedia/commons/1/11/Bulldog_adult_male.jpg
+Poodle,Daisy,5,https://upload.wikimedia.org/wikipedia/commons/f/f8/Full_attention_%288067543690%29.jpg
+Beagle,Milo,3,https://upload.wikimedia.org/wikipedia/commons/5/55/Beagle_600.jpg
+Rottweiler,Rocky,4,https://upload.wikimedia.org/wikipedia/commons/2/26/Rottweiler_standing_facing_left.jpg
+Dachshund,Zoe,1,https://upload.wikimedia.org/wikipedia/commons/2/27/Short-haired-Dachshund.jpg
+Siberian Husky,Apollo,6,https://upload.wikimedia.org/wikipedia/commons/a/a3/Black-Magic-Big-Boy.jpg
