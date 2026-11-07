@@ -1,10 +1,15 @@
 #pragma once
+#include <stack>
+#include "Action.h"
 #include "IRepository.h"
 
 class AdminService {
 
 private:
 	IRepository& repo;
+
+	std::stack<std::unique_ptr<Action>> undo_stack;
+	std::stack<std::unique_ptr<Action>> redo_stack;
 
 public:
 	AdminService(IRepository& repo);
@@ -13,5 +18,7 @@ public:
 	void update_dog_age(const std::string& breed, const std::string& name, int new_age);
 	void update_dog_photograph(const std::string& breed, const std::string& name, const std::string& new_photograph);
 	const std::vector<Dog> get_dogs() const;
+	void undo();
+	void redo();
 	~AdminService();
 };

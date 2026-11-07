@@ -1,5 +1,6 @@
 #include "TextFileRepository.h"
 #include <fstream>
+#include "Exceptions.h"
 
 using namespace std;
 
@@ -40,7 +41,7 @@ void TextFileRepository::add_dog(const Dog & dog)
 {
     int index = find_dog(dog.get_breed(), dog.get_name());
     if (index != -1) {
-        throw exception("This dog is already in the shelter!");
+        throw RepositoryException("This dog is already in the shelter!");
     }
     this->storage.push_back(dog);
     this->write_to_file();
@@ -63,7 +64,7 @@ void TextFileRepository::delete_dog(const Dog& dog)
 {
     int index = find_dog(dog.get_breed(), dog.get_name());
     if (index == -1) {
-        throw exception("This dog is not in the shelter!");
+        throw RepositoryException("This dog is not in the shelter!");
     }
     this->storage.erase(storage.begin() + index);
     this->write_to_file();
@@ -73,7 +74,7 @@ void TextFileRepository::set_dog(const Dog & old_dog, const Dog & new_dog)
 {
     int index = find_dog(old_dog.get_breed(), old_dog.get_name());
     if (index == -1) {
-        throw exception("This dog is not in the shelter!");
+        throw RepositoryException("This dog is not in the shelter!");
     }
     this->storage[index] = new_dog;
     this->write_to_file(); 

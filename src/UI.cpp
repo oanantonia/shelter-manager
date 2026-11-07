@@ -1,4 +1,8 @@
 #include "UI.h"
+#include "Exceptions.h"
+#include "AdoptionList.h"
+#include "CSVAdoptionList.h"
+#include "HTMLAdoptionList.h"
 #include <iostream>
 #include <string>
 #include <windows.h>
@@ -32,6 +36,7 @@ void UI::print_user_menu() {
     cout << "1. See dogs for adoption\n";
     cout << "2. Display adoption list\n";
     cout << "3. See dogs for adoption based on breed and maximum age\n";
+    cout << "4. Open adoption list\n";
     cout << "0. Back to Main Menu\n";
     cout << "Choose an option: ";
 }
@@ -45,7 +50,7 @@ void UI::ui_add_dog() {
     cout << "Enter age: "; cin >> age;
     if (cin.fail()) {
         cin.clear(); cin.ignore(10000, '\n');
-        throw exception("Age must be a number!");
+        throw UIException("Age must be a number!");
     }
     cin.ignore(); 
     cout << "Enter photograph link: "; getline(cin, photograph);
@@ -71,7 +76,7 @@ void UI::ui_update_dog() {
     cin >> choice;
     if (cin.fail()) {
         cin.clear(); cin.ignore(10000, '\n');
-        throw exception("CHoice must be a number!");
+        throw ValidationException("CHoice must be a number!");
     }
     cin.ignore();
 
@@ -80,7 +85,7 @@ void UI::ui_update_dog() {
         cout << "Enter new age: "; cin >> new_age;
         if (cin.fail()) {
             cin.clear(); cin.ignore(10000, '\n');
-            throw exception("Age must be a number!");
+            throw UIException("Age must be a number!");
         }
         cin.ignore();
 
@@ -145,7 +150,7 @@ void UI::ui_adopt_dogs()
         cin >> choice;
         if (cin.fail()) {
             cin.clear(); cin.ignore(10000, '\n');
-            throw exception("Choice must be a number!");
+            throw UIException("Choice must be a number!");
         }
         cin.ignore();
 
@@ -198,7 +203,7 @@ void UI::ui_adopt_dogs_filtered()
     cout << "Enter maximum age: "; cin >> max_age;
     if (cin.fail()) {
         cin.clear(); cin.ignore(10000, '\n');
-        throw exception("Age must be a number!");
+        throw UIException("Age must be a number!");
     }
     cin.ignore();
 
@@ -230,7 +235,7 @@ void UI::ui_adopt_dogs_filtered()
         cin >> choice;
         if (cin.fail()) {
             cin.clear(); cin.ignore(10000, '\n');
-            throw exception("Choice must be a number!");
+            throw UIException("Choice must be a number!");
         }
         cin.ignore();
 
@@ -260,6 +265,35 @@ void UI::ui_adopt_dogs_filtered()
 
 void UI::run_user_mode()
 {
+    cout << "What type of file would you like to use to save your adoption list?\n";
+    cout << "1. CSV\n2. HTML\nChoice: ";
+    int choice;
+
+    string filename;
+
+    try {
+        cin >> choice;
+        if (cin.fail() || (choice != 1 && choice != 2)) {
+            cin.clear(); cin.ignore(10000, '\n');
+            throw UIException("Invalid choice! CSV file will be chosen by default.");
+        }
+        cin.ignore();
+
+        if (choice == 1) {
+            filename = "adoption_list.csv";
+            this->user_service.set_adoption_list(new CSVAdoptionList(filename));
+        }
+        else {
+            filename = "adoption_list.html";
+            this->user_service.set_adoption_list(new HTMLAdoptionList(filename));
+        }
+    }
+    catch (exception& e) {
+        cout << e.what() << "\n";
+        filename = "adoption_list.csv";
+        this->user_service.set_adoption_list(new CSVAdoptionList(filename));
+    }
+
     while (true) {
         print_user_menu();
         int choice;
@@ -267,7 +301,7 @@ void UI::run_user_mode()
             cin >> choice;
             if (cin.fail()) {
                 cin.clear(); cin.ignore(10000, '\n');
-                throw exception("Choice must be a number!");
+                throw UIException("Choice must be a number!");
             }
             cin.ignore();
 
@@ -280,6 +314,9 @@ void UI::run_user_mode()
             }
             else if (choice == 3) {
                 ui_adopt_dogs_filtered();
+            }
+            else if (choice == 4) {
+                ShellExecuteA(NULL, "open", filename.c_str(), NULL, NULL, SW_SHOWNORMAL);
             }
             else cout << "Invalid choice!\n";
         }
@@ -297,7 +334,7 @@ void UI::run_admin_mode() {
             cin >> choice;
             if (cin.fail()) {
                 cin.clear(); cin.ignore(10000, '\n');
-                throw exception("Choice must be a number!");
+                throw UIException("Choice must be a number!");
             }
             cin.ignore();
 
@@ -333,7 +370,7 @@ void UI::start() {
             cin >> choice;
             if (cin.fail()) {
                 cin.clear(); cin.ignore(10000, '\n');
-                throw exception("Choice must be a number!");
+                throw UIException("Choice must be a number!");
             }
             cin.ignore();
 

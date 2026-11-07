@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include "MemoryRepository.h"
+#include "Exceptions.h"
 
 using namespace std;
 
@@ -10,7 +11,7 @@ void MemoryRepository::add_dog(const Dog& dog)
 {
 	int index = find_dog(dog.get_breed(), dog.get_name());
 	if (index != -1) {
-		throw exception("This dog is already in the shelter!");
+		throw RepositoryException("This dog is already in the shelter!");
 	}
 	this->storage.push_back(dog);
 }
@@ -32,7 +33,7 @@ void MemoryRepository::delete_dog(const Dog& dog)
 {
 	int index = find_dog(dog.get_breed(), dog.get_name());
 	if (index == -1) {
-		throw exception("This dog is not in the shelter!");
+		throw RepositoryException("This dog is not in the shelter!");
 	}
 	this->storage.erase(storage.begin() + index);
 }
@@ -41,7 +42,7 @@ void MemoryRepository::set_dog(const Dog& old_dog, const Dog& new_dog)
 {
 	int index = find_dog(old_dog.get_breed(), old_dog.get_name());
 	if (index == -1) {
-		throw exception("This dog is not in the shelter!");
+		throw RepositoryException("This dog is not in the shelter!");
 	}
 	this->storage[index] = new_dog;
 }

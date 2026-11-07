@@ -67,3 +67,26 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Visual Studio / in-source CMake output
+.vs/
+out/
+x64/
+Debug/
+Release/
+*.dir/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.slnx
+ALL_BUILD*
+ZERO_CHECK*
+CMakeUserPresets.json
+
+# Files the app writes at runtime
+my_adoption_list.csv
+my_adoption_list.html
+my_adoptions.csv
+adoption_list.csv
+adoption_list.html
