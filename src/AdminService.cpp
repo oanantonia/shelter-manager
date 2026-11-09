@@ -16,7 +16,7 @@ void AdminService::add_dog(const string& breed, const string& name, int age, con
 	DogValidator::validate(new_dog);
 	this->repo.add_dog(new_dog);
 
-	this->undo_stack.push(std::make_unique<ActionAdd>(this->repo, new_dog));
+	this->record(std::make_unique<ActionAdd>(this->repo, new_dog));
 }
 
 void AdminService::delete_dog(const string& breed, const string& name)
@@ -25,7 +25,7 @@ void AdminService::delete_dog(const string& breed, const string& name)
 	Dog dog_to_remove = this->repo.get_dog(index); 
 	this->repo.delete_dog(dog_to_remove);
 
-	this->undo_stack.push(std::make_unique<ActionRemove>(this->repo, dog_to_remove));
+	this->record(std::make_unique<ActionRemove>(this->repo, dog_to_remove));
 }
 
 void AdminService::update_dog_age(const string& breed, const string& name, int new_age)
@@ -36,7 +36,7 @@ void AdminService::update_dog_age(const string& breed, const string& name, int n
 	DogValidator::validate(new_dog);
 	this->repo.set_dog(old_dog, new_dog);
 
-	this->undo_stack.push(std::make_unique<ActionUpdate>(this->repo, old_dog, new_dog));
+	this->record(std::make_unique<ActionUpdate>(this->repo, old_dog, new_dog));
 }
 
 void AdminService::update_dog_photograph(const std::string& breed, const std::string& name, 
@@ -48,7 +48,7 @@ void AdminService::update_dog_photograph(const std::string& breed, const std::st
 	DogValidator::validate(new_dog);
 	this->repo.set_dog(old_dog, new_dog);
 
-	this->undo_stack.push(std::make_unique<ActionUpdate>(this->repo, old_dog, new_dog));
+	this->record(std::make_unique<ActionUpdate>(this->repo, old_dog, new_dog));
 }
 
 const std::vector<Dog> AdminService::get_dogs() const
@@ -56,15 +56,20 @@ const std::vector<Dog> AdminService::get_dogs() const
 	return this->repo.get_dogs();
 }
 
+void AdminService::record(std::unique_ptr<Action> action)
+{
+	this->undo_stack.push(std::move(action));
+	this->redo_stack = {};	// a new change makes the old redo history invalid
+}
+
 void AdminService::undo()
 {
 	if (this->undo_stack.empty()) {
 		throw ServiceException("Undo stack is empty!");
 	}
-	unique_ptr<Action> a = move(this->undo_stack.top());
+	this->undo_stack.top()->executeUndo();	// if this throws, the action stays on the stack
+	this->redo_stack.push(move(this->undo_stack.top()));
 	this->undo_stack.pop();
-	a->executeUndo();
-	this->redo_stack.push(move(a));
 }
 
 void AdminService::redo()
@@ -72,10 +77,9 @@ void AdminService::redo()
 	if (this->redo_stack.empty()) {
 		throw ServiceException("Redo stack is empty!");
 	}
-	unique_ptr<Action> a = move(this->redo_stack.top());
+	this->redo_stack.top()->executeRedo();	// if this throws, the action stays on the stack
+	this->undo_stack.push(move(this->redo_stack.top()));
 	this->redo_stack.pop();
-	a->executeRedo();
-	this->undo_stack.push(move(a));
 }
 
 AdminService::~AdminService()

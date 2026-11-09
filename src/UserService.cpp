@@ -11,6 +11,8 @@ UserService::UserService(IRepository& repo) : repo{ repo }, adoption_list{ nullp
 
 void UserService::set_adoption_list(AdoptionList* list)
 {
+    if (list == this->adoption_list) return;
+    delete this->adoption_list;     // free the previous list before replacing it
     this->adoption_list = list;
 }
 

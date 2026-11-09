@@ -1,4 +1,5 @@
 #include "TextFileRepository.h"
+#include <algorithm>
 #include <fstream>
 #include "Exceptions.h"
 

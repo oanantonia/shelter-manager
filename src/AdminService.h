@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <stack>
 #include "Action.h"
 #include "IRepository.h"
@@ -10,6 +11,8 @@ private:
 
 	std::stack<std::unique_ptr<Action>> undo_stack;
 	std::stack<std::unique_ptr<Action>> redo_stack;
+
+	void record(std::unique_ptr<Action> action);
 
 public:
 	AdminService(IRepository& repo);

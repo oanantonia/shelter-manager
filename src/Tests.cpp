@@ -3,6 +3,8 @@
 #include "MemoryRepository.h"
 #include "AdminService.h"
 #include "UserService.h"
+#include "Exceptions.h"
+#include "CSVAdoptionList.h"
 #include <cassert>
 #include <iostream>
 
@@ -71,19 +73,30 @@ void Tests::test_admin_service() {
     MemoryRepository repo;
     AdminService service(repo);
 
-    service.add_dog("b1", "n1", 1, "l1");
+    service.add_dog("b1", "n1", 1, "https://l1");
     assert(service.get_dogs().size() == 1);
 
     service.update_dog_age("b1", "n1", 5);
     std::vector<Dog> dogs = service.get_dogs();
     assert(dogs[0].get_age() == 5);
 
-    service.update_dog_photograph("b1", "n1", "newl");
+    service.update_dog_photograph("b1", "n1", "https://newl");
     dogs = service.get_dogs();
-    assert(dogs[0].get_photograph() == "newl");
+    assert(dogs[0].get_photograph() == "https://newl");
 
     service.delete_dog("b1", "n1");
     assert(service.get_dogs().size() == 0);
+
+    // a new change after an undo must clear the redo history
+    service.add_dog("b2", "n2", 3, "https://l2");
+    service.update_dog_age("b2", "n2", 5);
+    service.undo();                                  // age back to 3
+    service.update_dog_age("b2", "n2", 7);
+    bool redo_failed = false;
+    try { service.redo(); }
+    catch (const ServiceException&) { redo_failed = true; }
+    assert(redo_failed);
+    assert(service.get_dogs()[0].get_age() == 7);   // the 7 is kept
 
 }
 
@@ -92,18 +105,19 @@ void Tests::test_user_service()
     MemoryRepository repo;
     AdminService srv(repo);
 
-    srv.add_dog("b1", "n1", 1, "l1");
-    srv.add_dog("b2", "n2", 2, "l2");
-    srv.add_dog("b3", "n3", 3, "l3");
-    srv.add_dog("b4", "n4", 4, "l4");
-    srv.add_dog("b5", "n5", 5, "l5");
+    srv.add_dog("b1", "n1", 1, "https://l1");
+    srv.add_dog("b2", "n2", 2, "https://l2");
+    srv.add_dog("b3", "n3", 3, "https://l3");
+    srv.add_dog("b4", "n4", 4, "https://l4");
+    srv.add_dog("b5", "n5", 5, "https://l5");
 
     UserService service(repo);
+    service.set_adoption_list(new CSVAdoptionList("test_adoptions.csv"));
 
     assert(service.get_dogs().size() == 5);
     assert(service.get_adoption_list().size() == 0); 
 
-    Dog dog_to_adopt("b2", "n2", 2, "l2");
+    Dog dog_to_adopt("b2", "n2", 2, "https://l2");
     service.adopt_dog(dog_to_adopt);
 
     assert(service.get_adoption_list().size() == 1);
