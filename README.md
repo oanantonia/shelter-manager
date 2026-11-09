@@ -30,7 +30,7 @@ Design patterns used:
 ## How to run
 
 ### Option 1: Download (Windows)
-* **Download:** get `DogShelterManager-windows-x64.zip` from the [Releases](../../releases) page
+* **Download:** get `DogShelterManager-v2.1-windows-x64.zip` from the [Releases](../../releases) page
 * **Unzip** it anywhere
 * **Run** `shelter_app.exe`
 * **Enjoy :)**
@@ -49,5 +49,6 @@ Design patterns used:
 * **Enjoy :)**
 
 ## Versions
-* **v2.0:** Qt graphical interface (current)
+* **v2.1:** bug fixes (current)
+* **v2.0:** Qt graphical interface
 * **v1.0:** console version ([browse code](../../tree/v1.0))
